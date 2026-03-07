@@ -1,0 +1,128 @@
+version: 2
+
+models:
+  - name: dim_repository
+    description: "Repository dimension table with descriptive attributes."
+    columns:
+      - name: repo_id
+        description: "Unique repository identifier."
+        tests:
+          - not_null
+          - unique
+
+      - name: created_at
+        tests:
+          - not_null
+
+      - name: repo_age_days
+        tests:
+          - not_null
+
+  - name: dim_date
+    description: "Calendar dimension table."
+    columns:
+      - name: date_id
+        description: "Surrogate key in YYYYMMDD format."
+        tests:
+          - not_null
+          - unique
+
+      - name: full_date
+        tests:
+          - not_null
+          - unique
+
+      - name: day_of_week
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6]
+
+      - name: quarter
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4]
+
+      - name: is_weekend
+        tests:
+          - not_null
+
+  - name: dim_contributor
+    description: "Unique contributors dimension."
+    columns:
+      - name: contributor_id
+        description: "Unique contributor identifier."
+        tests:
+          - not_null
+          - unique
+
+      - name: login
+        tests:
+          - not_null
+          - unique
+
+      - name: first_contribution_at
+        tests:
+          - not_null
+
+  - name: fact_repo_activity
+    description: "Daily activity fact table by repository and date."
+    columns:
+      - name: repo_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_repository')
+              field: repo_id
+
+      - name: date_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
+
+      - name: commits_count
+        tests:
+          - not_null
+
+      - name: unique_committers
+        tests:
+          - not_null
+
+      - name: prs_opened
+        tests:
+          - not_null
+
+      - name: prs_merged
+        tests:
+          - not_null
+
+      - name: issues_opened
+        tests:
+          - not_null
+
+      - name: issues_closed
+        tests:
+          - not_null
+
+  - name: scoring_repositories
+    description: "Final business scoring table for repository comparison."
+    columns:
+      - name: repo_id
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('dim_repository')
+              field: repo_id
+
+      - name: score_global
+        tests:
+          - not_null
+
+      - name: ranking
+        tests:
+          - not_null
+          - unique

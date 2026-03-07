@@ -11,8 +11,9 @@ cleaned as (
     select
         -- Business key
         full_name as repo_id,
-        repo_name,
+        name as repo_name,
         owner_login,
+        license_name as license_name,
 
         -- Null handling
         coalesce(description, 'No description') as description,

@@ -1,4 +1,4 @@
-{{ config(materialized=’table’) }}
+{{ config(materialized='table') }}
 
 with commit_activities as (
     select
@@ -27,7 +27,7 @@ all_activities as (
 filtered as (
     select *
     from all_activities
-    where lower(login) not in ('unknown', 'no author login')
+    where lower(login) not in ('unknown')
       and login is not null
 )
 
@@ -42,4 +42,3 @@ select
 
 from filtered
 group by login
-order by total_activities desc;

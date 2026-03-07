@@ -1,12 +1,12 @@
-{{ config(materialized=’table’) }}
+{{ config(materialized='table') }}
 
 
 with date_spine as (
 select
     unnest(generate_series(
-        current_date- interval ’5 years’,
+        current_date - interval '5 years',
         current_date,
-        interval ’1 day’
+        interval '1 day'
     ))::date as full_date
 ),
 

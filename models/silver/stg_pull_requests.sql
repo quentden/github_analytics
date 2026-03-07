@@ -11,6 +11,8 @@ cleaned as (
 
         repo_full_name as repo_id,
         cast(pr_number as integer) as pr_number,
+        user_login as user_login,
+        state as pr_state,
 
         -- Dates -> TIMESTAMP
         cast(created_at as timestamp) as created_at,
