@@ -11,6 +11,9 @@ cleaned as (
     select
         -- Business key
         full_name as repo_id,
+        name as repo_name,
+        owner_login,
+        license_name as license_name,
 
         -- Null handling
         coalesce(description, 'No description') as description,
@@ -22,10 +25,14 @@ cleaned as (
         cast(pushed_at  as timestamp) as pushed_at,
 
         -- Metrics -> INTEGER
-        cast(stargazers_count as integer) as stargazers_count,
+        cast(stargazers_count as integer) as stars_count,
         cast(forks_count as integer) as forks_count,
         cast(watchers_count as integer) as watchers_count,
         cast(open_issues_count as integer) as open_issues_count,
+
+        default_branch,
+        cast(has_wiki as boolean) as has_wiki,
+        cast(has_pages as boolean) as has_pages,
 
         -- Derived column: age in days (today - created_at)
         datediff('day', cast(created_at as date), current_date) as repo_age_days

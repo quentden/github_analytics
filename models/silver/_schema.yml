@@ -1,0 +1,97 @@
+version: 2
+
+models:
+  - name: stg_repositories
+    description: "Cleaned repository metadata from raw_repositories."
+    columns:
+      - name: repo_id
+        description: "Unique repository identifier in owner/repo format."
+        tests:
+          - not_null
+          - unique
+
+      - name: created_at
+        tests:
+          - not_null
+
+      - name: language
+        tests:
+          - not_null
+
+      - name: description
+        tests:
+          - not_null
+
+  - name: stg_commits
+    description: "Cleaned commit history from raw_commits."
+    columns:
+      - name: commit_sha
+        description: "Unique commit identifier."
+        tests:
+          - not_null
+          - unique
+
+      - name: repo_id
+        tests:
+          - not_null
+
+      - name: day_of_week
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6]
+
+      - name: hour_of_day
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+
+  - name: stg_pull_requests
+    description: "Cleaned pull requests from raw_pull_requests."
+    columns:
+      - name: pr_number
+        description: "Pull request number."
+        tests:
+          - not_null
+
+      - name: repo_id
+        tests:
+          - not_null
+
+      - name: pr_state
+        description: "Pull request state."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['open', 'closed']
+
+      - name: is_merged
+        tests:
+          - not_null
+
+      - name: is_draft
+        tests:
+          - not_null
+
+  - name: stg_issues
+    description: "Cleaned issues from raw_issues with pull requests excluded."
+    columns:
+      - name: issue_number
+        description: "Issue number."
+        tests:
+          - not_null
+
+      - name: repo_id
+        tests:
+          - not_null
+
+      - name: is_pull_request
+        tests:
+          - not_null
+          - accepted_values:
+              values: [false]
+
+      - name: created_at
+        tests:
+          - not_null
