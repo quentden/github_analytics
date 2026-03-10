@@ -1,5 +1,12 @@
 -- models/silver/stg_issues.sql
-{{ config(materialized='view') }}
+
+{{ config(
+    materialized='incremental',
+    schema='silver',
+    unique_key=['repo_id', 'issue_number'],
+    incremental_strategy='merge'
+) }}
+-- car les issues peuvent changer d'état : état open → closed
 
 with source as (
     select *
@@ -33,3 +40,10 @@ cleaned as (
 select *
 from cleaned
 where is_pull_request = false
+
+{% if is_incremental() %}
+and( 
+    created_at > (select max(created_at) from {{ this }})
+    or (closed_at is not null and closed_at > (select coalesce(max(closed_at), '1900-01-01') from {{ this }}))
+)
+{% endif %}

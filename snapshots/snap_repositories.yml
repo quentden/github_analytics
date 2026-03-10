@@ -1,0 +1,20 @@
+# snapshots/snap_repositories.yml
+
+version: 2
+
+snapshots:
+  - name: snap_repositories
+    description: >
+      Snapshot of GitHub repositories from the Bronze layer.
+      Captures changes in metadata and metrics over time.
+    relation: source('bronze', 'raw_repositories')
+    config:
+      schema: snapshots
+      unique_key: full_name
+      strategy: check      # ou 'timestamp'
+      #updated_at: updated_at
+      check_cols:
+        - stargazers_count
+        - forks_count
+        - watchers_count
+        - open_issues_count

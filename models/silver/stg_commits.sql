@@ -1,7 +1,13 @@
 -- models/silver/stg_commits.sql
-{{ config(
-    materialized='view'
-) }}
+
+{{ 
+    config(
+        materialized='incremental',
+        schema='silver',
+        incremental_strategy='append'
+    ) 
+}}
+-- car les commits sont immuables : un SHA de commit ne change jamais
 
 with source as (
     select * from {{ source('bronze', 'raw_commits') }}
@@ -28,3 +34,9 @@ cleaned as (
 )
 
 select * from cleaned
+
+{% if is_incremental() %}
+where
+    committer_date > (select max(committer_date) from {{ this }})
+    or author_date > (select max(author_date) from {{ this }})
+{% endif %}

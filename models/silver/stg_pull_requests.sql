@@ -1,5 +1,12 @@
 -- models/silver/stg_pull_requests.sql
-{{ config(materialized='view') }}
+
+{{ config(
+    materialized='incremental',
+    schema='silver',
+    unique_key=['repo_id', 'pr_number'],
+    incremental_strategy='merge'
+) }}
+-- car les PR peuvent changer d'état : état open → closed
 
 with source as (
     select *
@@ -34,7 +41,15 @@ cleaned as (
         end as time_to_close_hours
 
     from source
+    where pr_number is not null
 )
 
 select *
 from cleaned
+
+{% if is_incremental() %}
+where 
+    created_at > (select coalesce(max(created_at), '1900-01-01') from {{ this }})
+    or (closed_at is not null and closed_at > (select coalesce(max(closed_at), '1900-01-01') from {{ this }}))
+    or (merged_at is not null and merged_at > (select coalesce(max(merged_at), '1900-01-01') from {{ this }}))
+{% endif %}

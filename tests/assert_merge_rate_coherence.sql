@@ -1,3 +1,7 @@
+-- tests/assert_merge_rate_coherence.sql
+-- Vérifie que le nombre de PRs mergées n'excède pas le nombre total de PRs
+-- Échoue si merged_prs > total_prs pour un repo donné
+
 with community_history as (
     select
         repo_id,

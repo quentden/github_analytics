@@ -1,4 +1,6 @@
--- Vérifie qu'il y a bien un seul meilleur repo 
+-- tests/assert_ranking_consistency_bis.sql
+-- Vérifie qu'il y a exactement un repo classé 1
+-- Échoue si plusieurs repos ou aucun repo ont le ranking = 1
 
 select *
 from (

@@ -58,6 +58,10 @@ models:
       - name: repo_id
         tests:
           - not_null
+      
+      - name: created_at
+        tests:
+          - not_null
 
       - name: pr_state
         description: "Pull request state."

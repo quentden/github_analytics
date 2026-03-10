@@ -1,4 +1,6 @@
--- tests/assert_ranking_consistency.sql-- Fails if the #1 ranked repo does not have the best score
+-- tests/assert_ranking_consistency.sql
+-- Fails if the #1 ranked repo does not have the best score
+
 select
     repo_id,
     score_global,
